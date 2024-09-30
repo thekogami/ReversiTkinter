@@ -11,16 +11,24 @@ def initialize_board():
     boardArray[3][3] = boardArray[4][4] = -1
     boardArray[3][4] = boardArray[4][3] = 1
 
-# Função para atualizar o tabuleiro gráfico
+# Função para atualizar o tabuleiro gráfico e o contador de peças
 def update_board():
+    black_count = 0
+    white_count = 0
     for i in range(boardLength):
         for j in range(boardLength):
             if boardArray[i][j] == 1:
                 buttons[i][j].config(bg='black')
+                black_count += 1
             elif boardArray[i][j] == -1:
                 buttons[i][j].config(bg='white')
+                white_count += 1
             else:
                 buttons[i][j].config(bg='green')
+    
+    # Atualiza os contadores de peças
+    black_count_label.config(text=f'Peças Pretas: {black_count}')
+    white_count_label.config(text=f'Peças Brancas: {white_count}')
 
 # Função para verificar movimentos válidos
 def is_valid_move(x, y, player):
@@ -107,6 +115,13 @@ for i in range(boardLength):
         button = tk.Button(root, width=button_width // 10, height=button_height // 20, bg='green', command=lambda i=i, j=j: on_click(i, j))
         button.grid(row=i, column=j, sticky='nsew')
         buttons[i][j] = button
+
+# Adicionar rótulos para contagem de peças
+black_count_label = tk.Label(root, text="Peças Pretas: 2", font=("Arial", 12))
+black_count_label.grid(row=boardLength, column=0, columnspan=4, sticky='nsew')
+
+white_count_label = tk.Label(root, text="Peças Brancas: 2", font=("Arial", 12))
+white_count_label.grid(row=boardLength, column=4, columnspan=4, sticky='nsew')
 
 # Ajustar o redimensionamento automático
 for i in range(boardLength):
