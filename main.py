@@ -87,7 +87,7 @@ def on_click(x, y):
             make_move(x, y, currentPlayer)
             update_board()
             currentPlayer = -1  # Troca para o jogador 2 (algoritmo)
-            root.after(1000, ai_move)  # Chama a jogada do algoritmo após 1 segundo
+            root.after(1000, ai_move)
 
 # Função para a jogada do algoritmo
 def ai_move():
@@ -115,19 +115,18 @@ def end_game(black_count, white_count):
     win_label = tk.Label(win_popup, text=winner, font=("Arial", 18), padx=20, pady=20)
     win_label.pack()
 
-    # Botão para fechar o jogo
     close_button = tk.Button(win_popup, text="Fechar", command=root.quit, font=("Arial", 12), padx=20, pady=10)
     close_button.pack()
 
-# Configuração da interface gráfica
+
 root = tk.Tk()
 root.title("Reversi/Othello")
 
-# Obter a largura e altura da tela
+
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 
-# Calcula o tamanho de cada botão com base na tela e no tamanho do tabuleiro
+
 button_width = screen_width // boardLength
 button_height = screen_height // boardLength
 
@@ -139,14 +138,14 @@ for i in range(boardLength):
         button.grid(row=i, column=j, sticky='nsew')
         buttons[i][j] = button
 
-# Adicionar rótulos para contagem de peças
+
 black_count_label = tk.Label(root, text="Peças Pretas: 2", font=("Arial", 12))
 black_count_label.grid(row=boardLength, column=0, columnspan=4, sticky='nsew')
 
 white_count_label = tk.Label(root, text="Peças Brancas: 2", font=("Arial", 12))
 white_count_label.grid(row=boardLength, column=4, columnspan=4, sticky='nsew')
 
-# Ajustar o redimensionamento automático
+
 for i in range(boardLength):
     root.grid_rowconfigure(i, weight=1)
     root.grid_columnconfigure(i, weight=1)
@@ -154,5 +153,5 @@ for i in range(boardLength):
 initialize_board()
 update_board()
 
-# Iniciar o loop principal da interface gráfica
+
 root.mainloop()
