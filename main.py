@@ -1,12 +1,11 @@
 import tkinter as tk
 import random
 
-# Variáveis globais
 boardLength = 8
 boardArray = [[0 for _ in range(boardLength)] for _ in range(boardLength)]
 currentPlayer = 1  # 1 para jogador 1 (preto), -1 para jogador 2 (algoritmo branco)
 
-# Função para inicializar o tabuleiro
+
 def initialize_board():
     boardArray[3][3] = boardArray[4][4] = -1
     boardArray[3][4] = boardArray[4][3] = 1
