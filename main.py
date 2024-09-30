@@ -87,7 +87,10 @@ def on_click(x, y):
             make_move(x, y, currentPlayer)
             update_board()
             currentPlayer = -1  # Troca para o jogador 2 (algoritmo)
-            root.after(1000, ai_move)
+            if get_valid_moves(currentPlayer):
+                root.after(1000, ai_move)  # IA joga se houver movimentos
+            else:
+                currentPlayer = 1  # Sem jogadas, volta para o jogador humano
 
 # Função para a jogada do algoritmo
 def ai_move():
@@ -99,6 +102,12 @@ def ai_move():
         make_move(x, y, currentPlayer)
         update_board()
         currentPlayer = 1  # Troca para o jogador humano
+        if not get_valid_moves(currentPlayer):  # Verifica se o humano pode jogar
+            currentPlayer = -1
+            if get_valid_moves(currentPlayer):
+                root.after(1000, ai_move)
+    else:
+        currentPlayer = 1  # Se não há jogadas válidas, volta para o jogador humano
 
 # Função para encerrar o jogo e mostrar o vencedor
 def end_game(black_count, white_count):
