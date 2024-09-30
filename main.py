@@ -92,20 +92,88 @@ def on_click(x, y):
             else:
                 currentPlayer = 1  # Sem jogadas, volta para o jogador humano
 
-# Função para a jogada do algoritmo
+# Função de avaliação heurística
+def evaluate_board(player):
+    score = 0
+    for i in range(boardLength):
+        for j in range(boardLength):
+            if boardArray[i][j] == player:
+                # Valorização de cantos
+                if (i, j) in [(0, 0), (0, 7), (7, 0), (7, 7)]:
+                    score += 100
+                # Valorização de bordas
+                elif i == 0 or i == 7 or j == 0 or j == 7:
+                    score += 10
+                else:
+                    score += 1
+            elif boardArray[i][j] == -player:
+                if (i, j) in [(0, 0), (0, 7), (7, 0), (7, 7)]:
+                    score -= 100
+                elif i == 0 or i == 7 or j == 0 or j == 7:
+                    score -= 10
+                else:
+                    score -= 1
+    return score
+
+# Função Minimax com Poda Alfa-Beta
+def minimax(player, depth, alpha, beta):
+    if depth == 0 or not get_valid_moves(player) and not get_valid_moves(-player):
+        return evaluate_board(player)
+
+    if player == currentPlayer:  # Maximizar o jogador atual
+        max_eval = float('-inf')
+        for move in get_valid_moves(player):
+            x, y = move
+            original_board = [row[:] for row in boardArray]
+            make_move(x, y, player)
+            evaluation = minimax(-player, depth - 1, alpha, beta)
+            boardArray[:] = original_board  # Restaura o tabuleiro
+            max_eval = max(max_eval, evaluation)
+            alpha = max(alpha, evaluation)
+            if beta <= alpha:
+                break
+        return max_eval
+    else:  # Minimizar o oponente
+        min_eval = float('inf')
+        for move in get_valid_moves(player):
+            x, y = move
+            original_board = [row[:] for row in boardArray]
+            make_move(x, y, player)
+            evaluation = minimax(-player, depth - 1, alpha, beta)
+            boardArray[:] = original_board  # Restaura o tabuleiro
+            min_eval = min(min_eval, evaluation)
+            beta = min(beta, evaluation)
+            if beta <= alpha:
+                break
+        return min_eval
+
+# Função da IA que usa o algoritmo Minimax com Poda Alfa-Beta
 def ai_move():
     global currentPlayer
     valid_moves = get_valid_moves(currentPlayer)
     if valid_moves:
-        # Algoritmo simples que escolhe um movimento aleatório válido
-        x, y = random.choice(valid_moves)
-        make_move(x, y, currentPlayer)
-        update_board()
-        currentPlayer = 1  # Troca para o jogador humano
-        if not get_valid_moves(currentPlayer):  # Verifica se o humano pode jogar
-            currentPlayer = -1
-            if get_valid_moves(currentPlayer):
-                root.after(1000, ai_move)
+        best_move = None
+        best_value = float('-inf')
+        for move in valid_moves:
+            x, y = move
+            original_board = [row[:] for row in boardArray]
+            make_move(x, y, currentPlayer)
+            move_value = minimax(-currentPlayer, depth=3, alpha=float('-inf'), beta=float('inf'))
+            boardArray[:] = original_board  # Restaura o tabuleiro
+            if move_value > best_value:
+                best_value = move_value
+                best_move = (x, y)
+        
+        # Executa a melhor jogada encontrada
+        if best_move:
+            x, y = best_move
+            make_move(x, y, currentPlayer)
+            update_board()
+            currentPlayer = 1  # Troca para o jogador humano
+            if not get_valid_moves(currentPlayer):  # Verifica se o humano pode jogar
+                currentPlayer = -1
+                if get_valid_moves(currentPlayer):
+                    root.after(1000, ai_move)
     else:
         currentPlayer = 1  # Se não há jogadas válidas, volta para o jogador humano
 
