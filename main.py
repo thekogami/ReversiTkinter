@@ -29,6 +29,10 @@ def update_board():
     # Atualiza os contadores de peças
     black_count_label.config(text=f'Peças Pretas: {black_count}')
     white_count_label.config(text=f'Peças Brancas: {white_count}')
+    
+    # Verifica se o jogo terminou
+    if not get_valid_moves(1) and not get_valid_moves(-1):
+        end_game(black_count, white_count)
 
 # Função para verificar movimentos válidos
 def is_valid_move(x, y, player):
@@ -95,6 +99,25 @@ def ai_move():
         make_move(x, y, currentPlayer)
         update_board()
         currentPlayer = 1  # Troca para o jogador humano
+
+# Função para encerrar o jogo e mostrar o vencedor
+def end_game(black_count, white_count):
+    if black_count > white_count:
+        winner = "Jogador 1 (Preto) venceu!"
+    elif white_count > black_count:
+        winner = "Jogador 2 (Branco) venceu!"
+    else:
+        winner = "Empate!"
+
+    # Mostrar uma mensagem de vitória
+    win_popup = tk.Toplevel(root)
+    win_popup.title("Fim de Jogo!")
+    win_label = tk.Label(win_popup, text=winner, font=("Arial", 18), padx=20, pady=20)
+    win_label.pack()
+
+    # Botão para fechar o jogo
+    close_button = tk.Button(win_popup, text="Fechar", command=root.quit, font=("Arial", 12), padx=20, pady=10)
+    close_button.pack()
 
 # Configuração da interface gráfica
 root = tk.Tk()
